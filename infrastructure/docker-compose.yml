@@ -1,0 +1,34 @@
+services:
+  mariadb:
+    image: mariadb:10.6.5
+    container_name: mariadb
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+    volumes:
+      - mariadb:/var/lib/mysql
+    networks:
+      - alifacademy
+  centrifugo:
+    container_name: centrifugo
+    image: centrifugo/centrifugo:v5
+    volumes:
+      - ./centrifugo/config.json:/centrifugo/config.json
+    command: centrifugo -c config.json
+    ports:
+      - "8081:8000"
+    networks:
+      - alifacademy
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+
+volumes:
+  mariadb:
+
+networks:
+  alifacademy:
+    name: "alifacademy"
+    external: true
