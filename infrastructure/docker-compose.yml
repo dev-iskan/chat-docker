@@ -10,6 +10,7 @@ services:
       - mariadb:/var/lib/mysql
     networks:
       - alifacademy
+
   centrifugo:
     container_name: centrifugo
     image: centrifugo/centrifugo:v5
@@ -20,10 +21,6 @@ services:
       - "8000:8000"
     networks:
       - alifacademy
-    ulimits:
-      nofile:
-        soft: 65535
-        hard: 65535
 
 volumes:
   mariadb:

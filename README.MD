@@ -1,4 +1,4 @@
 docker network create alifacademy
-
-
-jwt token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTgzNzU5MDF9.qQbe5R-eo2c8n5vtGtDaUepzG9ho1OM3Bl737i6lhtw
+create database chat: docker exec ... "chat"
+jwt token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjk4MzgzNDE0fQ.7MCyggUJ9jNKSInR2U5FVtvvJkGXguhEXWBFOO9hLxM
