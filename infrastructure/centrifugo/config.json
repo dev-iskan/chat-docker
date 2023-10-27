@@ -4,5 +4,6 @@
   "admin_secret": "0873352b-01de-40bd-8f82-8897da91c817",
   "api_key": "d636b15d-d12a-4d88-9635-97f0722a4271",
   "allowed_origins": ["*"],
+  "allow_subscribe_for_client": true,
   "admin" : true
 }

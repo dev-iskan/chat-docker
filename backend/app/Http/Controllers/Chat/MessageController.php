@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Chat\MessageResource;
 use App\Models\Message;
 use App\Models\User;
+use App\Services\CentrifugoHttpService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use phpcent\Client;
 
 class MessageController extends Controller
 {
@@ -20,7 +22,7 @@ class MessageController extends Controller
         return MessageResource::collection($messages);
     }
 
-    public function store(Request $request): MessageResource
+    public function store(Request $request, CentrifugoHttpService $centrifugoHttpService): MessageResource
     {
         $this->validate($request, [
             'user_id' => 'required|integer|min:1',
@@ -36,6 +38,16 @@ class MessageController extends Controller
         $message->text = $request->input('text');
         $message->user()->associate($user);
         $message->save();
+
+        $client = new Client(config('services.centrifugo.domain'));
+        $client->setApiKey(config('services.centrifugo.api_key'));
+
+        $client->publish('chat', [
+            'text' => $message->text,
+            'user_id' => $message->user_id,
+            'user_name' => $user->name,
+            'created_at' => $message->created_at->toString(),
+        ]);
 
         return new MessageResource($message);
     }

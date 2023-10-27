@@ -17,7 +17,7 @@ services:
       - ./centrifugo/config.json:/centrifugo/config.json
     command: centrifugo -c config.json
     ports:
-      - "8081:8000"
+      - "8000:8000"
     networks:
       - alifacademy
     ulimits:
