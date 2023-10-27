@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   node-app-serve:
-    image: node:16
+    image: node:16-alpine
     container_name: node-serve
     volumes:
       - ./:/app
@@ -17,9 +17,8 @@ services:
 
   node-app-cli:
     container_name: node-cli
-#    image: node:16-alpine
-    image: node:16
-#    command: sleep infinity
+    image: node:16-alpine
+    command: sleep infinity
     volumes:
       - ./:/app
     working_dir: /app

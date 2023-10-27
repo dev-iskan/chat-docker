@@ -42,13 +42,10 @@ class MessageController extends Controller
         $client = new Client(config('services.centrifugo.domain'));
         $client->setApiKey(config('services.centrifugo.api_key'));
 
-        $client->publish('chat', [
-            'text' => $message->text,
-            'user_id' => $message->user_id,
-            'user_name' => $user->name,
-            'created_at' => $message->created_at->toString(),
-        ]);
+        $response = new MessageResource($message);
 
-        return new MessageResource($message);
+        $client->publish('chat', $response->toArray($request));
+
+        return $response;
     }
 }
