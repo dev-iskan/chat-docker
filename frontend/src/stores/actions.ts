@@ -14,7 +14,7 @@ export const actions = {
   async actionGetMessages(page: string) {
     const store = useBaseStore();
     const response = await getMessages(page);
-    store.messages = [...response.data.data];
+    store.messages = [...store.messages, ...response.data.data];
     const meta = response.data.meta;
     store.current_page = meta.current_page;
     store.from = meta.from;
@@ -23,11 +23,10 @@ export const actions = {
 
   async actionGetMessageCentrifuge(message) {
     const store = useBaseStore();
-    store.messages.push(message);
+    store.messages = [message, ...store.messages];
   },
 
   async actionSendMessage(payload) {
     await sendMessage(payload);
-    await this.actionGetMessages('');
   }
 };

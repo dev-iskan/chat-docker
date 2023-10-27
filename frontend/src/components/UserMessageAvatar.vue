@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="userId === currentId ? 'bg-primary-300' : 'bg-blue-200'"
+    :class="message._avatar_color"
     class="rounded-full flex justify-center items-center shadow-sm w-11 h-11 mt-auto"
   >
     <UserCircleIcon class="w-6 h-6" />
@@ -10,14 +10,10 @@
 <script setup lang="ts">
 import { UserCircleIcon } from '@heroicons/vue/24/outline';
 
-const props = defineProps({
-  userId: {
-    type: Number,
-    default: null
-  },
-  currentId: {
-    type: Number,
-    default: null
+defineProps({
+  message: {
+    type: Object,
+    default: () => ({})
   }
 });
 </script>

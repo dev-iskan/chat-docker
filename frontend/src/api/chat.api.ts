@@ -1,7 +1,7 @@
 import { apiClient } from '@/api/apiClient';
 
 export const signIn = (name: string) => {
-  return apiClient.post(`/me?name=${name}`).then((res) => res.data.data);
+  return apiClient.post(`/me`, { name: name }).then((res) => res.data.data);
 };
 
 export const getMessages = (page: string) => {

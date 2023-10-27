@@ -6,11 +6,6 @@
     </div>
 
     <div>{{ message.text }}</div>
-    <div class="flex justify-end">
-      <span class="text-xs text-gray-500">
-        {{ isMessageEdited }}
-      </span>
-    </div>
   </div>
 </template>
 
@@ -27,13 +22,10 @@ const props = defineProps({
 
 const store = useBaseStore();
 
-const userMessageStyle = 'rounded-br-none ml-auto bg-primary-100';
-const otherUserMessageStyle = 'rounded-bl-none mr-auto bg-primary-200';
+const userMessageStyle = `rounded-br-none ml-auto ${props.message._message_color}`;
+const otherUserMessageStyle = `rounded-bl-none mr-auto ${props.message._message_color}`;
 const messageStyle = computed(() => {
   return props.message.user_id === store.getUserData?.id ? userMessageStyle : otherUserMessageStyle;
-});
-const isMessageEdited = computed(() => {
-  return props.message.edited ? 'Изменено' : '';
 });
 </script>
 

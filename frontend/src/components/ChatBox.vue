@@ -5,6 +5,9 @@
     @scroll="handleScroll"
   >
     <TransitionGroup name="messages" tag="div">
+      <div class="flex justify-center">
+        <AtLoading v-if="loading" class="w-6 h-6" />
+      </div>
       <div
         v-for="message in chatMessages"
         :key="message.id"
@@ -12,13 +15,15 @@
         :class="message.user_id === currentUserId ? 'flex-row-reverse' : 'justify-normal'"
       >
         <UserMessageAvatar
-          :userId="message.user_id"
-          :currentId="currentUserId"
+          :message="message"
           :class="message.user_id === currentUserId ? 'ml-2' : 'mr-2'"
         />
         <UserMessage :message="message" />
       </div>
     </TransitionGroup>
+  </div>
+  <div class="absolute bottom-12 left-1/2 mb-8 hover:cursor-pointer" @click="scrollToBottom">
+    <ArrowDownIcon class="w-6 h-6 text-blue-500" />
   </div>
   <UserMessageInput v-model="message" :loading="loading" @submit="sendMessage" />
 </template>
@@ -32,6 +37,8 @@ import { useBaseStore } from '@/stores';
 import UserMessageInput from '@/components/UserMessageInput.vue';
 import type { Centrifuge } from 'centrifuge';
 import { isValidValue } from '@/utils/simpleValidate';
+import { ArrowDownIcon } from '@heroicons/vue/24/outline';
+import AtLoading from '../components/ui/AtLoading';
 
 const store = useBaseStore();
 const $centrifuge: Centrifuge = inject('$centrifuge');
@@ -40,7 +47,6 @@ $centrifuge.connect();
 
 const subscription = $centrifuge.newSubscription('chat');
 subscription.on('publication', (ctx) => {
-  console.log(ctx);
   store.actionGetMessageCentrifuge(ctx.data);
 });
 subscription.subscribe();
@@ -57,12 +63,13 @@ const chatMessages = computed(() => store.getExtendedMessagesList);
 const pagination = computed(() => store.getPaginationValues);
 
 const sendMessage = async () => {
-  if (isValidValue(message.value) && chatMessages.value.length < 300) {
+  if (isValidValue(message.value)) {
     loading.value = true;
     const payload = {
       user_id: currentUserId.value,
       text: message.value
     };
+    await store.actionSendMessage(payload);
     message.value = '';
     scrollToBottom();
     setTimeout(() => {
@@ -82,33 +89,32 @@ const scrolling = ref(false);
 
 const handleScroll = () => {
   scrolling.value = true;
-
+  loading.value = true;
   clearTimeout(scrollTimeout);
 
-  // Set a new timeout
   scrollTimeout = setTimeout(() => {
     scrolling.value = false;
     const lastKnownScrollPosition = chatContainer.value.scrollTop;
 
-    if (lastKnownScrollPosition <= 300) {
+    if (lastKnownScrollPosition <= 200) {
       const { current_page, last_page } = pagination.value;
       if (current_page < last_page) {
         store.actionGetMessages(current_page + 1);
       }
     }
+    loading.value = false;
   }, 400);
 };
 
 let scrollTimeout: number;
 
 onMounted(() => {
-  store.actionGetMessages('');
   scrollToBottom();
+  store.actionGetMessages(store.current_page);
 });
 onBeforeUnmount(() => {
   $centrifuge.removeSubscription(subscription);
   $centrifuge.disconnect();
-  store.$reset();
 });
 </script>
 

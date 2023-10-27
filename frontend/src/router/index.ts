@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import AuthLayout from '@/layouts/AuthLayout.vue'
-import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import AuthLayout from '@/layouts/AuthLayout.vue';
+import DefaultLayout from '@/layouts/DefaultLayout.vue';
 
 const routes = [
   {
@@ -13,50 +13,50 @@ const routes = [
     name: 'chat',
     component: DefaultLayout
   }
-]
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes
-})
+});
 
-let isUserDataLoaded = false
+let isUserDataLoaded = false;
 
 const getUserData = () => {
   return new Promise((resolve) => {
-    const user = localStorage.getItem('user')
-    resolve(user)
-  })
-}
+    const user = localStorage.getItem('user');
+    resolve(user);
+  });
+};
 
 router.beforeEach(async (to, from, next) => {
   if (!isUserDataLoaded) {
     try {
-      const user = await getUserData()
+      const user = await getUserData();
 
       if (user) {
-        const isValid = JSON.parse(user)
+        const isValid = JSON.parse(user);
         if (isValid) {
-          isUserDataLoaded = true
-          next()
+          isUserDataLoaded = true;
+          next();
         } else if (to.path !== '/auth') {
-          next('/auth')
+          next('/auth');
         } else {
-          next()
+          next();
         }
       } else if (to.path !== '/auth') {
-        next('/auth')
+        next('/auth');
       } else {
-        isUserDataLoaded = true
-        next()
+        isUserDataLoaded = true;
+        next();
       }
     } catch (error) {
-      console.error('Error getting user data:', error)
-      next('/auth')
+      console.error('Error getting user data:', error);
+      next('/auth');
     }
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;
