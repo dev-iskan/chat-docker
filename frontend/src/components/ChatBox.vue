@@ -7,7 +7,11 @@
         class="flex space-y-4"
         :class="message.user_id === currentUserId ? 'flex-row-reverse' : 'justify-normal'"
       >
-        <UserMessageAvatar :class="message.user_id === currentUserId ? 'ml-2' : 'mr-2'" />
+        <UserMessageAvatar
+          :userId="message.user_id"
+          :currentId="currentUserId"
+          :class="message.user_id === currentUserId ? 'ml-2' : 'mr-2'"
+        />
         <UserMessage :message="message" />
       </div>
     </TransitionGroup>
@@ -42,7 +46,7 @@ const message = ref('');
 
 const currentUserId = computed(() => store.getUserData?.id);
 
-const chatMessages = computed(() => store.getMessagesList);
+const chatMessages = computed(() => store.getExtendedMessagesList);
 
 const sendMessage = async () => {
   loading.value = true;
@@ -61,13 +65,13 @@ const sendMessage = async () => {
 const scrollToBottom = () => {
   nextTick(() => {
     const chatBox = chatContainer.value;
-    chatBox.scrollTop = chatBox.scrollHeight;
+    chatBox.scrollTop = chatBox.scrollHeight + 100;
   });
 };
 
 onMounted(() => {
   store.actionGetMessages('');
-  chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+  scrollToBottom();
 });
 onBeforeUnmount(() => {
   $centrifuge.removeSubscription(subscription);

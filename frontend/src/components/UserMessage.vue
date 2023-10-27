@@ -15,9 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useBaseStore } from '@/stores';
-import { formatDate } from '@/utils/formatDate';
 
 const props = defineProps({
   message: {
@@ -36,15 +35,6 @@ const messageStyle = computed(() => {
 const isMessageEdited = computed(() => {
   return props.message.edited ? 'Изменено' : '';
 });
-
-watch(
-  () => props.message,
-  (value) =>
-    Object.assign(value, {
-      _created_at_date: formatDate(value.created_at, 'dd MMM yyy'),
-      _created_at_time: formatDate(value.created_at, 'HH:mm')
-    })
-);
 </script>
 
 <style scoped></style>
