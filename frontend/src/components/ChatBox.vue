@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, nextTick, onMounted, ref } from 'vue';
+import { computed, inject, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import UserMessage from '@/components/UserMessage.vue';
 import UserMessageAvatar from '@/components/UserMessageAvatar.vue';
@@ -44,14 +44,14 @@ const currentUserId = computed(() => store.getUserData?.id);
 
 const chatMessages = computed(() => store.getMessagesList);
 
-const sendMessage = () => {
+const sendMessage = async () => {
   loading.value = true;
   const payload = {
     user_id: currentUserId.value,
     text: message.value
   };
   message.value = '';
-  store.actionSendMessage(payload);
+  await store.actionSendMessage(payload);
   scrollToBottom();
   setTimeout(() => {
     loading.value = false;
@@ -61,13 +61,17 @@ const sendMessage = () => {
 const scrollToBottom = () => {
   nextTick(() => {
     const chatBox = chatContainer.value;
-    console.log(chatBox);
     chatBox.scrollTop = chatBox.scrollHeight;
   });
 };
 
 onMounted(() => {
   store.actionGetMessages('');
+  chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+});
+onBeforeUnmount(() => {
+  $centrifuge.removeSubscription(subscription);
+  $centrifuge.disconnect();
 });
 </script>
 

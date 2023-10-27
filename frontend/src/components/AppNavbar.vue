@@ -12,14 +12,14 @@
 </template>
 
 <script setup lang="ts">
-import alifLogo from '@/assets/alif-logo.svg'
-import { ArrowLeftOnRectangleIcon } from '@heroicons/vue/24/outline'
-import { useRouter } from 'vue-router'
+import alifLogo from '@/assets/alif-logo.svg';
+import { ArrowLeftOnRectangleIcon } from '@heroicons/vue/24/outline';
+import { useRouter } from 'vue-router';
 
-const router = useRouter()
+const router = useRouter();
 
 const logout = () => {
-  localStorage.removeItem('user')
-  router.push('/auth')
-}
+  localStorage.clear();
+  router.push('/auth');
+};
 </script>
