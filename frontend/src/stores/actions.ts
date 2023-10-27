@@ -1,15 +1,33 @@
 import { getMessages, sendMessage, signIn } from '@/api/chat.api';
+import { useBaseStore } from '@/stores/index';
 
 export const actions = {
   async actionLogin(name: string) {
-    this.user = await signIn(name);
-    localStorage.setItem('user', JSON.stringify(this.user));
+    try {
+      const store = useBaseStore();
+      store.user = await signIn(name);
+      localStorage.setItem('user', JSON.stringify(store.user));
+    } catch (error) {
+      console.error('Sign-in failed:', error);
+    }
   },
   async actionGetMessages(page: string) {
-    this.messages = await getMessages(page);
+    const store = useBaseStore();
+    const response = await getMessages(page);
+    store.messages = [...response.data.data];
+    const meta = response.data.meta;
+    store.current_page = meta.current_page;
+    store.from = meta.from;
+    store.last_page = meta.last_page;
   },
+
+  async actionGetMessageCentrifuge(message) {
+    const store = useBaseStore();
+    store.messages.push(message);
+  },
+
   async actionSendMessage(payload) {
     await sendMessage(payload);
-    await this.actionGetMessages();
+    await this.actionGetMessages('');
   }
 };

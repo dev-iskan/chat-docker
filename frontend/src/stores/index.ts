@@ -7,9 +7,9 @@ import type { Message, UserEntity } from '@/types';
 export interface RootState {
   user: null | UserEntity;
   messages: null | Message[];
-  current_page: number;
-  from: number;
-  last_page: number;
+  current_page: null | number;
+  from: null | number;
+  last_page: null | number;
 }
 
 export const useBaseStore = defineStore('base', {

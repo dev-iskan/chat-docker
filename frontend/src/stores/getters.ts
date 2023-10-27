@@ -9,13 +9,15 @@ export const getters = {
     return state.messages;
   },
   getExtendedMessagesList(state: RootState) {
-    return state.messages?.map((message) => {
-      return {
-        ...message,
-        _created_at_date: formatDate(message.created_at, 'dd MMM yyy'),
-        _created_at_time: formatDate(message.created_at, 'HH:mm')
-      };
-    });
+    return state.messages
+      ?.map((message) => {
+        return {
+          ...message,
+          _created_at_date: formatDate(message.created_at, 'dd MMM yyy'),
+          _created_at_time: formatDate(message.created_at, 'HH:mm')
+        };
+      })
+      .reverse();
   },
   getPaginationValues(state: RootState) {
     return {

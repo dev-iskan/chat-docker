@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-lg p-4 rounded-2xl shadow-sm" :class="messageStyle">
     <div class="flex justify-between items-center space-x-4">
-      <div class="font-bold">{{ message.user.name }}</div>
+      <div class="font-bold">{{ message.user?.name }}</div>
       <div class="text-xs">{{ message._created_at_date + '-' + message._created_at_time }}</div>
     </div>
 

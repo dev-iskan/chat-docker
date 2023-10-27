@@ -19,7 +19,6 @@
         <UserMessage :message="message" />
       </div>
     </TransitionGroup>
-    <button class="bottom-100 left-1/2" v-if="showButtons">Вниз</button>
   </div>
   <UserMessageInput v-model="message" :loading="loading" @submit="sendMessage" />
 </template>
@@ -40,8 +39,9 @@ const $centrifuge: Centrifuge = inject('$centrifuge');
 $centrifuge.connect();
 
 const subscription = $centrifuge.newSubscription('chat');
-subscription.on('publication', () => {
-  store.actionGetMessages('');
+subscription.on('publication', (ctx) => {
+  console.log(ctx);
+  store.actionGetMessageCentrifuge(ctx.data);
 });
 subscription.subscribe();
 
@@ -57,14 +57,13 @@ const chatMessages = computed(() => store.getExtendedMessagesList);
 const pagination = computed(() => store.getPaginationValues);
 
 const sendMessage = async () => {
-  if (isValidValue(message.value)) {
+  if (isValidValue(message.value) && chatMessages.value.length < 300) {
     loading.value = true;
     const payload = {
       user_id: currentUserId.value,
       text: message.value
     };
     message.value = '';
-    await store.actionSendMessage(payload);
     scrollToBottom();
     setTimeout(() => {
       loading.value = false;
@@ -80,21 +79,27 @@ const scrollToBottom = () => {
 };
 
 const scrolling = ref(false);
-const showButtons = ref(false);
+
 const handleScroll = () => {
   scrolling.value = true;
-  setInterval(() => {
-    if (scrolling.value) {
-      scrolling.value = false;
-      const lastKnownScrollPosition = chatContainer.value.scrollTop;
-      if (lastKnownScrollPosition <= 300) {
-        if (pagination.current_page < pagination.last_page) {
-          store.actionGetMessages(pagination.value.current_page + 1);
-        }
+
+  clearTimeout(scrollTimeout);
+
+  // Set a new timeout
+  scrollTimeout = setTimeout(() => {
+    scrolling.value = false;
+    const lastKnownScrollPosition = chatContainer.value.scrollTop;
+
+    if (lastKnownScrollPosition <= 300) {
+      const { current_page, last_page } = pagination.value;
+      if (current_page < last_page) {
+        store.actionGetMessages(current_page + 1);
       }
     }
   }, 400);
 };
+
+let scrollTimeout: number;
 
 onMounted(() => {
   store.actionGetMessages('');
@@ -103,6 +108,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   $centrifuge.removeSubscription(subscription);
   $centrifuge.disconnect();
+  store.$reset();
 });
 </script>
 
