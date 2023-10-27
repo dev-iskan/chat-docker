@@ -48,6 +48,7 @@ $centrifuge.connect();
 const subscription = $centrifuge.newSubscription('chat');
 subscription.on('publication', (ctx) => {
   store.actionGetMessageCentrifuge(ctx.data);
+  scrollToBottom();
 });
 subscription.subscribe();
 
