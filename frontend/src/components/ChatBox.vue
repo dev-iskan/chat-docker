@@ -5,7 +5,7 @@
     @scroll="handleScroll"
   >
     <TransitionGroup name="messages" tag="div">
-      <div class="flex justify-center">
+      <div class="flex justify-center" key="loader">
         <AtLoading v-if="loading" class="w-6 h-6" />
       </div>
       <div
@@ -102,8 +102,9 @@ const handleScroll = () => {
         store.actionGetMessages(current_page + 1);
       }
     }
-    loading.value = false;
   }, 400);
+  loading.value = false;
+  console.log(loading.value);
 };
 
 let scrollTimeout: number;
