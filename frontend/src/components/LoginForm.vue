@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-primary-200 w-80 p-4 rounded-2xl">
+  <div class="bg-primary-200 w-80 p-4 rounded-2xl shadow-sm">
     <form
       class="space-y-4 flex flex-col justify-center items-center"
       @keydown.enter.prevent="submit"
@@ -41,8 +41,10 @@ import Button from 'primevue/button'
 
 import alifLogo from '@/assets/alif-logo.svg'
 import { useRouter } from 'vue-router'
+import { useBaseStore } from '@/stores'
 
 const router = useRouter()
+const store = useBaseStore()
 
 const fields = reactive({
   username: ''
@@ -54,7 +56,7 @@ const resetForm = () => {
 }
 const submit = () => {
   if (fields.username && fields.username.length > 0) {
-    localStorage.setItem('username', fields.username)
+    store.actionLogin(fields.username)
     router.push('/')
     resetForm()
   } else isValid.value = true

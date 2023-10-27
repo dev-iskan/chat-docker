@@ -2,19 +2,19 @@ import { defineStore } from 'pinia'
 import { getters } from '@/stores/getters'
 import { actions } from '@/stores/actions'
 
-import type { UserEntity } from '@/types'
+import type { Message, UserEntity } from '@/types'
 
 export interface RootState {
-  user: UserEntity
+  user: null | UserEntity
+  messages: null | Message[]
 }
 
 export const useBaseStore = defineStore('base', {
   state: (): RootState => ({
-    user: {
-      id: 1,
-      username: 'Morrigan'
-    }
+    user: null,
+    messages: null
   }),
   getters,
-  actions
+  actions,
+  persist: true
 })

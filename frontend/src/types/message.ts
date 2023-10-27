@@ -1,8 +1,10 @@
+import type { UserEntity } from '@/types/user'
+
 export interface Message {
   id: number
-  username: string
-  sentAt: string
   text: string
-  avatar?: string
-  edited: boolean
+  user_id: number
+  created_at: string
+  updated_at: string
+  user: UserEntity
 }

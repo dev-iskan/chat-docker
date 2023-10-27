@@ -14,8 +14,10 @@
   "dependencies": {
     "@heroicons/vue": "^2.0.18",
     "axios": "^1.6.0",
+    "centrifuge": "^5.0.1",
     "date-fns": "^2.30.0",
     "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.0",
     "primeicons": "^6.0.1",
     "primevue": "^3.38.1",
     "vue": "^3.3.4",

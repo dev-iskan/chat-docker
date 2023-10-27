@@ -1,7 +1,10 @@
-import type { RootState } from '@/stores/index'
+import type { RootState } from '@/stores/index';
 
 export const getters = {
-  userData(state: RootState) {
-    return state.user
+  getUserData(state: RootState) {
+    return state.user;
+  },
+  getMessagesList(state: RootState) {
+    return state.messages;
   }
-}
+};

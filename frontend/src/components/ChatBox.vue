@@ -1,13 +1,13 @@
 <template>
-  <div ref="chatContainer" class="bg-primary-50 rounded flex flex-col p-4 max-h-72 chat-box">
+  <div ref="chatContainer" class="bg-primary-50 rounded flex flex-col p-4 h-full chat-box">
     <TransitionGroup name="messages" tag="div">
       <div
-        v-for="message in messages"
+        v-for="message in chatMessages"
         :key="message.id"
         class="flex space-y-4"
-        :class="message.id === currentUserId ? 'flex-row-reverse' : 'justify-normal'"
+        :class="message.user_id === currentUserId ? 'flex-row-reverse' : 'justify-normal'"
       >
-        <UserMessageAvatar :class="message.id === currentUserId ? 'ml-2' : 'mr-2'" />
+        <UserMessageAvatar :class="message.user_id === currentUserId ? 'ml-2' : 'mr-2'" />
         <UserMessage :message="message" />
       </div>
     </TransitionGroup>
@@ -16,78 +16,59 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, reactive, ref } from 'vue'
+import { computed, inject, nextTick, onMounted, ref } from 'vue';
 
-import UserMessage from '@/components/UserMessage.vue'
-import UserMessageAvatar from '@/components/UserMessageAvatar.vue'
-import { useBaseStore } from '@/stores'
-import type { Message } from '@/types'
-import UserMessageInput from '@/components/UserMessageInput.vue'
+import UserMessage from '@/components/UserMessage.vue';
+import UserMessageAvatar from '@/components/UserMessageAvatar.vue';
+import { useBaseStore } from '@/stores';
+import UserMessageInput from '@/components/UserMessageInput.vue';
+import type { Centrifuge } from 'centrifuge';
 
-const store = useBaseStore()
+const store = useBaseStore();
+const $centrifuge: Centrifuge = inject('$centrifuge');
 
-const loading = ref(false)
-const chatContainer = ref(null)
+$centrifuge.connect();
 
-const message = ref('')
+const subscription = $centrifuge.newSubscription('chat');
+subscription.on('publication', () => {
+  store.actionGetMessages('');
+});
+subscription.subscribe();
 
-const currentUserId = computed(() => store.userData.id)
+const loading = ref(false);
+const chatContainer = ref(null);
 
-const messages: Message[] = reactive([
-  {
-    id: 1,
-    username: 'Morrigan',
-    sentAt: '12:45',
-    edited: false,
-    text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae consectetur, dolore, dolorum et expedita harum impedit minus, qui quia quos recusandae reiciendis sunt unde! Assumenda aut debitis necessitatibus non sequi!'
-  },
-  {
-    id: 2,
-    username: 'Karrigan',
-    sentAt: '12:47',
-    edited: false,
-    text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae consectetur, dolore, dolorum et expedita harum impedit minus, qui quia quos recusandae reiciendis sunt unde! Assumenda aut debitis necessitatibus non sequi!'
-  },
-  {
-    id: 1,
-    username: 'Morrigan',
-    sentAt: '12:49',
-    edited: false,
-    text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae consectetur, dolore, dolorum et expedita harum impedit minus, qui quia quos recusandae reiciendis sunt unde! Assumenda aut debitis necessitatibus non sequi!'
-  },
-  {
-    id: 2,
-    username: 'Karrigan',
-    sentAt: '12:51',
-    edited: true,
-    text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae consectetur, dolore, dolorum et expedita harum impedit minus, qui quia quos recusandae reiciendis sunt unde! Assumenda aut debitis necessitatibus non sequi!'
-  }
-])
+const message = ref('');
+
+const currentUserId = computed(() => store.getUserData?.id);
+
+const chatMessages = computed(() => store.getMessagesList);
 
 const sendMessage = () => {
-  loading.value = true
+  loading.value = true;
   const payload = {
-    id: currentUserId.value,
-    username: store.userData.username,
-    sentAt: new Date().toLocaleDateString(),
-    edited: false,
+    user_id: currentUserId.value,
     text: message.value
-  }
-  message.value = ''
-
-  messages.push(payload)
-  scrollToBottom()
+  };
+  message.value = '';
+  store.actionSendMessage(payload);
+  scrollToBottom();
   setTimeout(() => {
-    loading.value = false
-  }, 1000)
-}
+    loading.value = false;
+  }, 1000);
+};
 
 const scrollToBottom = () => {
   nextTick(() => {
-    const chatBox = chatContainer.value
-    chatBox.scrollTop = chatBox.scrollHeight
-  })
-}
+    const chatBox = chatContainer.value;
+    console.log(chatBox);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+};
+
+onMounted(() => {
+  store.actionGetMessages('');
+});
 </script>
 
 <style lang="css" scoped>

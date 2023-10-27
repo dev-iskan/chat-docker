@@ -1,14 +1,6 @@
-import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import type { UserEntity } from '@/types'
-
-const canUserAccess = async (to: RouteLocationNormalized) => {
-  const user = localStorage.getItem('username')
-
-  if (user) return true
-  else return false
-}
 
 const routes = [
   {
@@ -28,10 +20,40 @@ const router = createRouter({
   routes
 })
 
+let isUserDataLoaded = false
+
+const getUserData = () => {
+  return new Promise((resolve) => {
+    const user = localStorage.getItem('user')
+    resolve(user)
+  })
+}
+
 router.beforeEach(async (to, from, next) => {
-  const canAccess = await canUserAccess(to)
-  if (!canAccess && to.path !== '/auth') {
-    next('/auth')
+  if (!isUserDataLoaded) {
+    try {
+      const user = await getUserData()
+
+      if (user) {
+        const isValid = JSON.parse(user)
+        if (isValid) {
+          isUserDataLoaded = true
+          next()
+        } else if (to.path !== '/auth') {
+          next('/auth')
+        } else {
+          next()
+        }
+      } else if (to.path !== '/auth') {
+        next('/auth')
+      } else {
+        isUserDataLoaded = true
+        next()
+      }
+    } catch (error) {
+      console.error('Error getting user data:', error)
+      next('/auth')
+    }
   } else {
     next()
   }

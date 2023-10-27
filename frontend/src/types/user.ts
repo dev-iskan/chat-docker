@@ -1,4 +1,7 @@
 export interface UserEntity {
+  created_at: string
   id: number
-  username: string
+  name: string
+  updated_at: string
+  user_agent: string
 }

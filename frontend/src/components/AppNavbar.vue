@@ -19,7 +19,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const logout = () => {
-  localStorage.removeItem('username')
+  localStorage.removeItem('user')
   router.push('/auth')
 }
 </script>

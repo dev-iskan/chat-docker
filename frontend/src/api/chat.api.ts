@@ -1,11 +1,18 @@
 import { apiClient } from '@/api/apiClient'
 
-const getCurrentUserInfo = (name: string) => {
-  apiClient.post(`/me?name=${name}`).then((res) => console.log(res))
+export const signIn = (name: string) => {
+  return apiClient.post(`/me?name=${name}`).then((res) => res.data.data)
 }
 
-const getMessages = (page: string) => {
-  apiClient.get(`/messages?page=${page}`).then((res) => console.log(res))
+export const getMessages = (page: string) => {
+  return apiClient.get(`/messages?page=${page}`).then((res) => res.data.data)
 }
 
-export { getCurrentUserInfo }
+interface SendMessagePayload {
+  user_id: number
+  text: string
+}
+
+export const sendMessage = (payload: SendMessagePayload) => {
+  return apiClient.post('/messages', payload)
+}
