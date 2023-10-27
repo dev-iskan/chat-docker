@@ -17,6 +17,7 @@ class MessageController extends Controller
     {
         $messages = Message::query()
             ->with('user')
+            ->orderBy('id', 'desc')
             ->paginate(100);
         return MessageResource::collection($messages);
     }

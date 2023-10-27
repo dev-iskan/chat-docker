@@ -14,6 +14,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class User extends Model
 {
+    protected $fillable = [
+        'name',
+        'user_agent'
+    ];
     public function messages(): HasMany
     {
         return $this->hasMany(Message::class);
