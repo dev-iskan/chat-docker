@@ -104,7 +104,6 @@ const handleScroll = () => {
     }
   }, 400);
   loading.value = false;
-  console.log(loading.value);
 };
 
 let scrollTimeout: number;
