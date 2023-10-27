@@ -35,32 +35,33 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import InputText from 'primevue/inputtext'
-import Button from 'primevue/button'
+import { reactive, ref } from 'vue';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
 
-import alifLogo from '@/assets/alif-logo.svg'
-import { useRouter } from 'vue-router'
-import { useBaseStore } from '@/stores'
+import alifLogo from '@/assets/alif-logo.svg';
+import { useRouter } from 'vue-router';
+import { useBaseStore } from '@/stores';
+import { isValidValue } from '@/utils/simpleValidate';
 
-const router = useRouter()
-const store = useBaseStore()
+const router = useRouter();
+const store = useBaseStore();
 
 const fields = reactive({
   username: ''
-})
-const isValid = ref(false)
+});
+const isValid = ref(false);
 const resetForm = () => {
-  fields.username = ''
-  isValid.value = false
-}
+  fields.username = '';
+  isValid.value = false;
+};
 const submit = () => {
-  if (fields.username && fields.username.length > 0) {
-    store.actionLogin(fields.username)
-    router.push('/')
-    resetForm()
-  } else isValid.value = true
-}
+  if (isValidValue(fields.username)) {
+    store.actionLogin(fields.username);
+    router.push('/');
+    resetForm();
+  } else isValid.value = true;
+};
 </script>
 
 <style lang="scss" scoped></style>

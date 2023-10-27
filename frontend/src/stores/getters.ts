@@ -16,5 +16,12 @@ export const getters = {
         _created_at_time: formatDate(message.created_at, 'HH:mm')
       };
     });
+  },
+  getPaginationValues(state: RootState) {
+    return {
+      current_page: state.current_page,
+      from: state.from,
+      last_page: state.last_page
+    };
   }
 };

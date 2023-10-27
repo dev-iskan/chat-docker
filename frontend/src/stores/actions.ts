@@ -10,6 +10,6 @@ export const actions = {
   },
   async actionSendMessage(payload) {
     await sendMessage(payload);
-    await this.actionGetMessages('');
+    await this.actionGetMessages();
   }
 };

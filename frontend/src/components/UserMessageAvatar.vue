@@ -20,8 +20,6 @@ const props = defineProps({
     default: null
   }
 });
-
-console.log(props.userId, props.currentId);
 </script>
 
 <style scoped></style>

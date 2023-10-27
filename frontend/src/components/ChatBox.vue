@@ -1,5 +1,9 @@
 <template>
-  <div ref="chatContainer" class="bg-primary-50 rounded flex flex-col p-4 h-full chat-box">
+  <div
+    ref="chatContainer"
+    class="relative bg-primary-50 rounded flex flex-col p-4 h-full chat-box"
+    @scroll="handleScroll"
+  >
     <TransitionGroup name="messages" tag="div">
       <div
         v-for="message in chatMessages"
@@ -15,6 +19,7 @@
         <UserMessage :message="message" />
       </div>
     </TransitionGroup>
+    <button class="bottom-100 left-1/2" v-if="showButtons">Вниз</button>
   </div>
   <UserMessageInput v-model="message" :loading="loading" @submit="sendMessage" />
 </template>
@@ -27,6 +32,7 @@ import UserMessageAvatar from '@/components/UserMessageAvatar.vue';
 import { useBaseStore } from '@/stores';
 import UserMessageInput from '@/components/UserMessageInput.vue';
 import type { Centrifuge } from 'centrifuge';
+import { isValidValue } from '@/utils/simpleValidate';
 
 const store = useBaseStore();
 const $centrifuge: Centrifuge = inject('$centrifuge');
@@ -48,18 +54,22 @@ const currentUserId = computed(() => store.getUserData?.id);
 
 const chatMessages = computed(() => store.getExtendedMessagesList);
 
+const pagination = computed(() => store.getPaginationValues);
+
 const sendMessage = async () => {
-  loading.value = true;
-  const payload = {
-    user_id: currentUserId.value,
-    text: message.value
-  };
-  message.value = '';
-  await store.actionSendMessage(payload);
-  scrollToBottom();
-  setTimeout(() => {
-    loading.value = false;
-  }, 1000);
+  if (isValidValue(message.value)) {
+    loading.value = true;
+    const payload = {
+      user_id: currentUserId.value,
+      text: message.value
+    };
+    message.value = '';
+    await store.actionSendMessage(payload);
+    scrollToBottom();
+    setTimeout(() => {
+      loading.value = false;
+    }, 1000);
+  }
 };
 
 const scrollToBottom = () => {
@@ -67,6 +77,23 @@ const scrollToBottom = () => {
     const chatBox = chatContainer.value;
     chatBox.scrollTop = chatBox.scrollHeight + 100;
   });
+};
+
+const scrolling = ref(false);
+const showButtons = ref(false);
+const handleScroll = () => {
+  scrolling.value = true;
+  setInterval(() => {
+    if (scrolling.value) {
+      scrolling.value = false;
+      const lastKnownScrollPosition = chatContainer.value.scrollTop;
+      if (lastKnownScrollPosition <= 300) {
+        if (pagination.current_page < pagination.last_page) {
+          store.actionGetMessages(pagination.value.current_page + 1);
+        }
+      }
+    }
+  }, 400);
 };
 
 onMounted(() => {
