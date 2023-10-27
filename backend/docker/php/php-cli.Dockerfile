@@ -29,8 +29,8 @@ RUN install-php-extensions @composer
 RUN apk --no-cache add git nano && \
     rm -rf /var/cache/apk/* /tmp/*
 
-# Устанавливаем права пользователя
-RUN chown -R www-data:www-data /app
+## Устанавливаем права пользователя
+#RUN #chown -R www-data:www-data /app
 
 # Устанавливаем www-data как текущего пользователя
 USER www-data
