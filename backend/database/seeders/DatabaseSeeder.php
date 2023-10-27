@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $user->save();
 
         $user = new User();
-        $user->name = 'Sabo';
+        $user->name = 'Maksud';
         $user->user_agent = 'Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Mobile Safari/537.36';
         $user->save();
 

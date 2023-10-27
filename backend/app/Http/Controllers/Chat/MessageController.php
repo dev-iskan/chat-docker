@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Chat\MessageResource;
 use App\Models\Message;
 use App\Models\User;
-use App\Services\CentrifugoHttpService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use phpcent\Client;
@@ -22,7 +21,7 @@ class MessageController extends Controller
         return MessageResource::collection($messages);
     }
 
-    public function store(Request $request, CentrifugoHttpService $centrifugoHttpService): MessageResource
+    public function store(Request $request): MessageResource
     {
         $this->validate($request, [
             'user_id' => 'required|integer|min:1',
