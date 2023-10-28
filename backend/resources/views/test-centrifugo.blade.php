@@ -10,8 +10,8 @@
 <script type="text/javascript">
     const container = document.getElementById('counter');
 
-    const centrifuge = new Centrifuge("ws://localhost:8000/connection/websocket", {
-        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjk4MzgzNDE0fQ.7MCyggUJ9jNKSInR2U5FVtvvJkGXguhEXWBFOO9hLxM"
+    const centrifuge = new Centrifuge("", {
+        token: ""
     });
 
     centrifuge.on('connecting', function (ctx) {
