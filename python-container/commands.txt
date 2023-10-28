@@ -1,8 +1,10 @@
 1. docker build -t tree-image . - где "tree-image" название созданного образа, а "." контекст относительно какой собирать образ
 2. docker run tree-image - запускаем контейнер и держим его запущенным
-4. docker run -d --rm -p 6333:6379 redis:alpine - запуск контейнера с redis
+4. docker run -d --rm -p 8080:80 -v ${PWD}:/usr/share/nginx/html nginx:alpine - запуск контейнера с redis
 5. docker exec -it <container_id> /bin/bash - вход в контейнер если он запущен
 6. docker ps - просмотр запущенных контейнеров
 7. docker ps -a - просмотр всех контейнеров
 7. docker stop <container_id> - останавливаем контейнер
 8. docker rm <container_id> - удаляет полностью из локальной машины контейнер
+9. docker network ls
+10. lsof -i :3306  (netstat -anb | findstr "3306") - проверить не занят ли порт

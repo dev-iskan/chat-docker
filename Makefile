@@ -23,3 +23,13 @@ frontend-exec:
 	docker-compose --project-name alifacademy-frontend -f frontend/docker-compose.yml exec -it node-app-cli ${COMMAND}
 frontend-npm-install:
 	make frontend-exec COMMAND="npm run install"
+
+
+all-up:
+	make infrastructure-up
+	make backend-up
+	make frontend-up
+all-down:
+	make infrastructure-down
+	make backend-down
+	make frontend-down
